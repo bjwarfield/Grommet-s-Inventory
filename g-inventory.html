@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html lang="en"  ng-app='myApp'>
+<html lang="en">
 <head>
 	<title>Grommet's Inventory Control</title>
 	<meta charset="UTF-8">
 
-	<script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script>
+	<!-- <script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script> -->
 	<script type="text/javascript" src="scripts/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="scripts/inventory.js"></script>
+	<script type="text/javascript" src="scripts/handsontable.min.js"></script>
+	<link rel="stylesheet" href="styles/handsontable.min.css">
 	
 </head>
 <body >
 	 Click here to select a file
 	<section id="section-file">
 		<form action="" enctype="multipart/form-data">
-			<input type="file"  name="xlfile" id="xlfile" />	
+			<input type="file"  name="xlfile" id="xlfile" accept=".xls,.xlsx" />
+			<div id="FileInfo"></div>
+			<div id="SheetData"></div>
 		</form>
 	</section>
 	
