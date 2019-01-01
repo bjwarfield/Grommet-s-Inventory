@@ -1,28 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<title>Grommet's Inventory Control</title>
-	<meta charset="UTF-8">
-
-	<!-- <script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script> -->
-	<script type="text/javascript" src="scripts/xlsx.full.min.js"></script>
-	<script type="text/javascript" src="scripts/inventory.js"></script>
-	<script type="text/javascript" src="scripts/handsontable.min.js"></script>
-	<link rel="stylesheet" href="styles/handsontable.min.css">
-	
-</head>
-<body >
-	 Click here to select a file
-	<section id="section-file">
-		<form action="" enctype="multipart/form-data">
-			<input type="file"  name="xlfile" id="xlfile" accept=".xls,.xlsx" />
-			<div id="FileInfo"></div>
-			<div id="SheetData"></div>
-		</form>
-	</section>
-	
-
-
-</body>
-
+	<head>
+		<title>Grommet's Inventory Control</title>
+		<meta charset="UTF-8">
+		<!-- <script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script> -->
+		<script type="text/javascript" src="scripts/xlsx.full.min.js"></script>
+		<script type="text/javascript" src="scripts/handsontable.full.min.js"></script>
+		<script type="text/javascript" src="scripts/idb.js"></script>
+		<script type="text/javascript" src="scripts/inventory.js"></script>
+		<link rel="stylesheet" href="styles/handsontable.full.min.css">
+		<link rel="stylesheet" href="styles/inventory.css">
+		
+	</head>
+	<body >
+		<main id="main">
+			<section id="FileSection">
+				<form action="" enctype="multipart/form-data">
+					<label for="file">Click here to select a file</label><br>
+					<input type="file"  name="xlfile" id="xlfile" accept=".xls,.xlsx" />
+					<div id="FileInfo"></div>
+					
+				</form>
+				<form action="" id="ButtonSection">
+					<button id="QuickScan">Quick Scan</button>
+					<button id="Edit">Search & Edit</button>
+					<button id="SaveButton">Save</button>
+				</form>
+			</section>
+			<section id="SheetContainer">
+				<article id="SheetData">
+				</article>
+			</section>
+		</main>
+	</body>
 </html>
