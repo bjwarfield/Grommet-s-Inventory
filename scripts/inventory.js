@@ -1,6 +1,16 @@
 (window.onload = function () {
-
+	//HandsonTable object
 	let hot;
+	
+
+	//DOM Utility Functions
+	const DOM = function(selector){
+		return document.querySelector(selector);
+	}
+	const DOMs = function(selector){
+		return document.querySelectorAll(selector);
+	}
+
 
 	if (window.File && window.FileReader && window.FileList && window.Blob) {
 		// Great success! All the File APIs are supported.
@@ -8,22 +18,20 @@
 		alert('The File APIs are not fully supported in this browser.');
 	}
 
+	//open and parse excel file. Exports data as JSON to HandsonTable Builder funciton
 	const handleFileSelect = function (e) {
-
-		//debug
+		
 		// console.log(e);
 
 		let output = [];
 		let file = e.target.files[0]; //retrive FileList Object
 
 		//collect file attributes
-		output.push('<il><strong>', file.name, '</strong> (',
-			file.type || 'n/a', ') - ',
+		output.push('File size: ',
 			file.size / 1000.0, ' kb, last modified: ',
-			file.lastModified ? new Date(file.lastModified).toLocaleDateString() : 'n/a',
-			'</li>');
+			file.lastModified ? new Date(file.lastModified).toLocaleString() : 'n/a');
 		//output attributes to dom
-		document.getElementById("FileInfo").innerHTML = `<ul> ${output.join('')} </ul>`;
+		DOM("#FileInfo").innerHTML = `<p> ${output.join('')} </p>`;
 
 
 		//type check
@@ -43,14 +51,45 @@
 				type: 'binary'
 			});
 
+			
+
 			let worksheet = workbook.Sheets[workbook.SheetNames[0]];
+			let JSONData = XLSX.utils.sheet_to_json(worksheet, {defval: ""});
+
+			//validate file by key values
+			let validKeys = [ "Item #", "Alternate Lookup", "UPC",
+							 "Vendor Name", "Item Name", "Attribute", 
+							 "Size", "Department", " Expected Count", 
+							 "Physical Count" ];
+
+			let fileKeys 
+			try{
+				fileKeys =  Object.keys(JSONData[0]);
+			}catch(err){
+				console.log(err);
+				alert("Incorrect File Selected");
+				DOM("#FileInfo").innerHTML = '';
+				DOM("#FileForm").reset();
+				if(hot){
+					hot.loadData([]);
+					console.log("Clearing Table Data")
+				}
+				return;
+			}
+
+			if(! fileKeys || fileKeys.toString() !== validKeys.toString()){
+				alert("Incorrect File Selected");
+				console.log('fileKeys');
+				console.log(fileKeys);
+				console.log('validKeys');
+				console.log(validKeys);
+				hot.loadData([]);
+				return;
+			}
+
 			// console.log(worksheet);
-			buildTable(XLSX.utils.sheet_to_json(worksheet, {
-				defval: ""
-			}));
-			console.log(XLSX.utils.sheet_to_json(worksheet, {
-				defval: ""
-			}));
+			buildTable(JSONData);
+			// console.log(JSONData);
 
 			// let sheetHTML = XLSX.utils.sheet_to_html(worksheet);
 			// document.querySelector('#SheetData').innerHTML = sheetHTML;
@@ -64,9 +103,11 @@
 
 	//handsontable builder plugin. pass JSON table data
 	const buildTable = function (JSONdata) {
-		let keys =  Object.keys(JSONdata[0])
-		hot = new Handsontable(document.querySelector('#SheetData'), {
+		let keys =  Object.keys(JSONdata[0]);
+		// console.log(keys);
+		hot = new Handsontable(DOM("#SheetData"), {
 			data: JSONdata,
+			search: true,
 			readOnly: true,
 			columns: [{
 				type: 'numeric',
@@ -97,7 +138,9 @@
 				data: keys[8]
 			}, {
 				type: 'numeric',
-				data: keys[9]
+				validator: 'numeric',
+				data: keys[9],
+				readOnly: false
 			}],
 			rowHeaders: true,
 			colHeaders: function (index) {
@@ -107,25 +150,30 @@
 			filters: true,
 			columnSorting: true
 		});
+
+		console.log(hot);
 	};
 
-	document.querySelector('#xlfile').addEventListener('change', handleFileSelect, false);
+	//quert values based on item #
 
+	//opens ScanModal
+	const OpenScanModal = function (){
+		DOM("#ScanModal").style.display = 'flex';
+	};
+	//close ScanModal
+	const CloseScanModal = function(){
+		DOM("#ScanModal").style.display = 'none';
+	};
 
+	//addEventListeners to DOM elements
+	DOM("#xlfile").addEventListener('change', handleFileSelect, false);
+	DOM("#QuickScan").addEventListener('click', OpenScanModal, false);
+	DOM("#ScanModal").addEventListener('click', CloseScanModal, false);
+	//clicking on modal bg closes modal.
+	DOM("#ScanCloseBtn").addEventListener('click', CloseScanModal, false);
+	//clicking on mocal content does not
+	DOMs(".modal-content").forEach(function (dom){
+		dom.addEventListener('click', function(e){e.stopPropagation();}, false);
+	});
 
-
-
-	// document.getElementById("xlfile").addEventListener('change', function(e){
-
-	//     let reader = new FileReader();
-
-	//     reader.onload = function(e){
-	//         var data = e.target.result;
-	//         var workbook = XLSX.read(data, {type : 'binary'});
-
-	//     }
-	//     reader.readAsBinaryString(f);
-	// }, false);
-
-
-})();
+});

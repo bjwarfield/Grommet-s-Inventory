@@ -1,36 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>Grommet's Inventory Control</title>
-		<meta charset="UTF-8">
-		<!-- <script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script> -->
-		<script type="text/javascript" src="scripts/xlsx.full.min.js"></script>
-		<script type="text/javascript" src="scripts/handsontable.full.min.js"></script>
-		<script type="text/javascript" src="scripts/idb.js"></script>
-		<script type="text/javascript" src="scripts/inventory.js"></script>
-		<link rel="stylesheet" href="styles/handsontable.full.min.css">
-		<link rel="stylesheet" href="styles/inventory.css">
-		
-	</head>
-	<body >
-		<main id="main">
-			<section id="FileSection">
-				<form action="" enctype="multipart/form-data">
-					<label for="file">Click here to select a file</label><br>
-					<input type="file"  name="xlfile" id="xlfile" accept=".xls,.xlsx" />
-					<div id="FileInfo"></div>
-					
+
+<head>
+	<title>Grommet's Inventory Control</title>
+	<meta charset="UTF-8">
+	<!-- <script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script> -->
+	<script type="text/javascript" src="scripts/xlsx.full.min.js"></script>
+	<script type="text/javascript" src="scripts/handsontable.full.min.js"></script>
+	<script type="text/javascript" src="scripts/idb.js"></script>
+
+	<link rel="stylesheet" href="styles/handsontable.full.min.css">
+	<link rel="stylesheet" href="styles/inventory.css">
+
+</head>
+
+<body>
+	<main id="main">
+		<section id="FileSection">
+			<form action="" enctype="multipart/form-data" id="FileForm">
+				<label for="file">Click here to select a file</label><br>
+				<input type="file" name="xlfile" id="xlfile" accept=".xls,.xlsx" />
+				<div id="FileInfo"></div>
+
+			</form>
+			<form action="" id="ButtonSection">
+				<button id="QuickScan">Quick Scan</button>
+				<button id="Edit">Search & Edit</button>
+				<button id="SaveButton">&#x1F4BE; Save</button>
+			</form>
+		</section>
+		<section id="SheetContainer">
+			<article id="SheetData">
+			</article>
+		</section>
+		<section id="ScanModal" class="modal">
+			<article class="modal-content">
+				<div id="ScanCloseBtn"	class="close-btn">&times;</div>
+				<div class="save-btn">&#x1F4BE; <span>Save</span></div>
+				<h2>
+					Quick Scan Entry
+				</h2>
+				<form action="#" id="ScanForm">
+					<div class="form-row">
+						<div class="form-stack" id="ScanEntryStack">
+							<label for="scan">Scan</label>
+							<input type="text" id="ScanEntry">
+							<p id="ScanInfo">Scan Item #'s or UPC's are automatically tallied into the spreadsheet</p>
+						</div>
+						<div class="form-stack">
+							<button id="ScanSubmit">Enter Item</button>
+						</div>
+						<!-- <div class="form-stack" id="ScanInfoStack">
+							
+						</div> -->
+
+					</div>
+					<div class="form-row">
+						<div class="form-stack stack-1" id="ScanItemNumStack">
+							<label for="ItemNum">Item #</label>
+							<input type="text" disabled name="ItemNum" id="ScanItemNum">
+						</div>
+						<div class="form-stack stack-2" id="ScanALUStack">
+							<label for="ALU">ALU</label>
+							<input type="text" name="ALU" id="ScanALU" disabled>
+						</div>
+						<div class="form-stack stack-3" id="ScanUPCStack">
+							<label for="UPC">UPC</label>
+							<input type="text" name="UPC" id="ScanUPC" disabled>
+						</div>
+						<div class="form-stack stack-3" id="ScanItemNameStack">
+							<label for="ItemName">Item Name</label>
+							<input type="text" name="ItemName" id="ScanItemName" disabled>
+						</div>
+						<div class="form-stack stack-3" id="ScanVendorNameStack">
+							<label for="VendorName">Vendor Name</label>
+							<input type="text" name="VendorName" id="ScanVendorName" disabled>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-stack stack-2" id="ScanAttributeStack">
+							<label for="Attribute">Attribute</label>
+							<input type="text" name="Attribute" id="ScanAttribute" disabled>
+						</div>
+						<div class="form-stack stack-3" id="ScanDepartmentStack">
+							<label for="Department">Department</label>
+							<input type="text" name="Department" id="ScanDepartment" disabled>
+						</div>
+						<div class="form-stack stack-1" id="ScanExpectedCountStack">
+							<label for="ExpectedCount">Expected</label>
+							<input type="text" name="ExpectedCount" id="ScanExpectedCount" disabled>
+						</div>
+						<div class="form-stack stack-1" id="ScanCurrentCountStack">
+							<label for="CurrentCount">Current Count</label>
+							<input type="text" name="CurrentCount" id="ScanCurrentCount" disabled>
+						</div>
+					</div>
 				</form>
-				<form action="" id="ButtonSection">
-					<button id="QuickScan">Quick Scan</button>
-					<button id="Edit">Search & Edit</button>
-					<button id="SaveButton">Save</button>
-				</form>
-			</section>
-			<section id="SheetContainer">
-				<article id="SheetData">
-				</article>
-			</section>
-		</main>
-	</body>
+			</article>
+		</section>
+	</main>
+	<script type="text/javascript" src="scripts/inventory.js"></script>
+</body>
+
 </html>

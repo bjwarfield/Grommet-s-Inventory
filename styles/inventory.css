@@ -1,6 +1,7 @@
 html {
 	font-family: sans-serif;
-	font-size: 9pt;
+	/* font-size: 9pt; */
+	line-height: 1.5;
 }
 
 html, body {
@@ -23,14 +24,22 @@ html, body {
 	flex-wrap: nowrap;
 	justify-content: space-between;
 	width: 95%;
+	height:100px;
 	margin:20px auto 10px;
 	background-color: lightblue;
+}
+#FileSection form{
+	flex-basis: 500px;
 }
 
 #ButtonSection button{
 	width: 150px;
 	height: 100%;
+	/* background: rgba(197, 204, 211, 0.8); */
 }
+/* #ButtonSection button:hover{
+	background: rgba(75, 100, 124, 0.5);
+} */
 
 #SaveButton{
 	margin-left: 25px;
@@ -41,7 +50,7 @@ html, body {
 	width: 95%;
 	/*height: 80%;*/
 	flex-grow: 1;
-	overflow: auto;
+	overflow: hidden;
 	margin: 10px auto 20px;
 
 }
@@ -50,6 +59,98 @@ html, body {
 	display: none;
 }
 
+.modal{
+	position: fixed;
+	z-index: 10;
+	left:0;
+	top: 0;
+	height: 100vh;
+	width: 100vw;
+	overflow: hidden;
+	background: rgba(0,0,0,0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+}
+
+#ScanModal{
+	display: none;
+}
+
+.modal-content{
+	font-size: 10pt;
+	background: rgb(235, 235, 235);
+	margin: auto;
+	padding: 20px;
+	width: 80%;
+	box-shadow: 0 5px 8px 0  rgba(0,0,0,0.4), 0 7px 20px 0  rgba(0,0,0,0.4);
+	
+}
+.close-btn{
+	float: right;
+	font-size: 30px;
+	color: rgb(150, 150, 150);
+	line-height: 1;
+	justify-content: center;
+	padding: 0 6px;
+}
+
+.close-btn:hover, .close-btn:focus{
+	color:black;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+#ScanForm{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+.form-row{
+	display: flex;
+	flex-direction: row;
+	align-items: stretch;
+	align-content: center;
+	justify-content: flex-start;
+	padding:7px;
+	flex-wrap: wrap;
+	width: auto;
+}
+.form-stack{
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	padding: 0 8px;
+}
+
+
+#ScanEntryStack{
+	flex-basis: 40%;
+}
+#ScanSubmit{
+	height: 60px;
+	width:100px;
+}
+#ScanInfo{
+	font-size: 8pt;
+}
+.stack-1{
+	width: 60px;
+	flex-grow: 1;
+}
+.stack-2{
+	width: 120px;
+	flex-grow: 2;
+}
+.stack-3{
+	width: 180px;
+	flex-grow: 3;
+}
+.stack-4{
+	width: 240px;
+	flex-grow: 4;
+}
 
 /* Every even row */
 .ht_master tbody tr:nth-of-type(even) td {
