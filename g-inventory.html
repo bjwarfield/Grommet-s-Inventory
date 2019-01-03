@@ -24,9 +24,9 @@
 
 			</form>
 			<form action="" id="ButtonSection">
-				<button id="QuickScan">Quick Scan</button>
-				<button id="Edit">Search & Edit</button>
-				<button id="SaveButton">&#x1F4BE; Save</button>
+				<button type="button" id="QuickScan">Quick Scan</button>
+				<button type="button" id="Edit">Search & Edit</button>
+				<button type="button" id="SaveButton">&#x1F4BE; Save</button>
 			</form>
 		</section>
 		<section id="SheetContainer">
@@ -48,7 +48,7 @@
 							<p id="ScanInfo">Scan Item #'s or UPC's are automatically tallied into the spreadsheet</p>
 						</div>
 						<div class="form-stack">
-							<button id="ScanSubmit">Enter Item</button>
+							<button type="submit" id="ScanSubmit">Enter Item</button>
 						</div>
 						<!-- <div class="form-stack" id="ScanInfoStack">
 							
@@ -68,19 +68,23 @@
 							<label for="UPC">UPC</label>
 							<input type="text" name="UPC" id="ScanUPC" disabled>
 						</div>
-						<div class="form-stack stack-3" id="ScanItemNameStack">
-							<label for="ItemName">Item Name</label>
-							<input type="text" name="ItemName" id="ScanItemName" disabled>
-						</div>
 						<div class="form-stack stack-3" id="ScanVendorNameStack">
 							<label for="VendorName">Vendor Name</label>
 							<input type="text" name="VendorName" id="ScanVendorName" disabled>
+						</div>
+						<div class="form-stack stack-3" id="ScanItemNameStack">
+							<label for="ItemName">Item Name</label>
+							<input type="text" name="ItemName" id="ScanItemName" disabled>
 						</div>
 					</div>
 					<div class="form-row">
 						<div class="form-stack stack-2" id="ScanAttributeStack">
 							<label for="Attribute">Attribute</label>
 							<input type="text" name="Attribute" id="ScanAttribute" disabled>
+						</div>
+						<div class="form-stack stack-1" id="ScanSizeStack">
+							<label for="Size">Size</label>
+							<input type="text" name="Size" id="ScanSize" disabled>
 						</div>
 						<div class="form-stack stack-3" id="ScanDepartmentStack">
 							<label for="Department">Department</label>
