@@ -1,9 +1,11 @@
 /* jshint esversion: 6 */
 (window.onload = function () {
 	//table Data
-	let JSONData;
+	let file, JSONData;
 	//HandsonTable object
 	let hot;
+	//save Tracker
+	let isDirty;
 
 
 	//DOM Utility Functions
@@ -21,13 +23,17 @@
 		alert('The File APIs are not fully supported in this browser.');
 	}
 
+	const SetDirty = function (changes, source){
+		isDirty = true;
+	};
+	
 	//open and parse excel file. Exports data as JSON to HandsonTable Builder funciton
 	const handleFileSelect = function (e) {
 
 		// console.log(e);
 
 		let output = [];
-		let file = e.target.files[0]; //retrive FileList Object
+		file = e.target.files[0]; //retrive FileList Object
 
 		//collect file attributes
 		output.push('File size: ',
@@ -153,7 +159,7 @@
 			filters: true,
 			columnSorting: true
 		});
-
+		Handsontable.hooks.add('afterChange', SetDirty);
 		// console.log(hot);
 	};
 
@@ -237,38 +243,6 @@
 
 	};
 
-	//quert values based on item #
-	// const QueryItemNum = function (query, queryResult, tally = false){
-	// 	let row;
-	// 	try{
-	// 		row = queryResult.filter(cell => cell.col == 0 && cell.data == query)[0].row;
-	// 		console.log(row);
-	// 		console.log(queryResult.filter(cell => cell.col == 0 && cell.data == query));
-	// 	}catch(e){return null;}
-
-
-	// 	if(tally){
-	// 		let count = hot.getDataAtCell(row,9);
-	// 		if(count == '')count = 0;
-	// 		hot.setDataAtCell(row,9,++count);
-	// 	}
-	// 	return hot.getDataAtRow(row);
-	// }
-
-	// //query based on UPC
-	// const QueryUPC = function (query, queryResult, tally = false){
-	// 	let row 
-	// 	try{
-	// 		row = queryResult.filter(cell => cell.col == 2 && cell.data == query)[0].row;
-	// 	}catch(e){return null;}
-
-	// 	if(tally){
-	// 		let count = hot.getDataAtCell(row,9);
-	// 		if(count == '')count = 0;
-	// 		hot.setDataAtCell(row,9,++count);
-	// 	}
-	// 	return hot.getDataAtRow(row);
-	// }
 
 	const ScanQeury = function (query, queryResult, tally = false) {
 		let filter, row;
@@ -283,14 +257,17 @@
 		// console.log(filter);
 		row = filter[0].row;
 
-		if (tally) {
-			let count = parseInt(hot.getDataAtCell(row, 9));
-			if (isNaN(count)) count = 0;
-			count++;
+		let rowData = hot.getDataAtRow(row);
 
-			hot.setDataAtCell(row, 9, count);
+
+		if (tally) {
+			let count = parseInt(rowData[9]);
+			if (isNaN(count)) count = 0;
+			
+			rowData[9] = ++count;
+			hot.setDataAtCell(row, 9, rowData[9]);
 		}
-		return hot.getDataAtRow(row);
+		return rowData;
 	};
 
 	//opens ScanModal
