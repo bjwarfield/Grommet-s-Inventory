@@ -1,11 +1,11 @@
 /* jshint esversion: 6 */
 (window.onload = function () {
 	//table Data
-	let file, JSONData;
+	let file, workbook, worksheet, JSONData, JSONBackup;
 	//HandsonTable object
 	let hot;
 	//save Tracker
-	let isDirty;
+	let saveLoop, isDirty;
 
 
 	//DOM Utility Functions
@@ -17,37 +17,135 @@
 	};
 
 
+	//check for File API
 	if (window.File && window.FileReader && window.FileList && window.Blob) {
 		// Great success! All the File APIs are supported.
 	} else {
 		alert('The File APIs are not fully supported in this browser.');
 	}
 
-	const SetDirty = function (changes, source){
-		isDirty = true;
+	//Initialize App
+	const InitApp = function () {
+		//check for Local Storage API
+		if (typeof (Storage) == 'undefined') {
+			DOM('#FileInfo').innerHTML = `<p>HTML5 localStorage not supported</p>`;
+		}
+
+		//clear lingering backups
+		if (localStorage.getItem('JSONBackup')) {
+			localStorage.removeItem('JSONBackup');
+		}
+
+		//check for stored data, load if exists
+		if (localStorage.getItem('WorkSheetData')) {
+			JSONData = JSON.parse(localStorage.getItem('WorkSheetData'));
+			buildTable(JSONData);
+		}
 	};
-	
+
+	//
+	const ChangeCallback = function (changes, source) {
+		isDirty = true;
+		DOM('#FileInfo').innerHTML = `<p>Unsaved Changes Pending</p>`;
+		DOM('#FileInfo').style.backgroundColor = 'lightpink';
+	};
+
+
+	const SaveProgress = function () {
+		if (!JSONData || JSONData == null || typeof JSONData == 'undefined') {
+			DOM('#FileInfo').innerHTML = `<p>No Data To Save</p>`;
+			return false;
+		}
+		if (isDirty) {
+			localStorage.setItem('WorkSheetData', JSON.stringify(JSONData));
+			DOM('#FileInfo').innerHTML = `<p>Changes Saved</p>`;
+			DOM('#FileInfo').style.backgroundColor = 'lightgreen';
+			isDirty = false;
+		}
+		return true;
+	};
+
+	const ExportJSON = function(){
+		let f = new Blob([JSON.stringify(JSONData)], {type: 'text/plain'});
+		let a = document.createElement('a');
+		let url = URL.createObjectURL(f);
+
+		a.href = url;
+		a.download = 'json.txt';
+		document.body.appendChild(a);
+		a.click();
+		setTimeout(function(){
+			document.body.removeChild(a);
+			window.URL.revokeObjectURL(url);
+		}, 0);
+
+	};
+
+	const ClearData = function () {
+		clearInterval(saveLoop);
+		if (hot) {
+			hot.loadData([]);
+		}
+		if (JSONData && JSONData != null && typeof JSONData != 'undefined') {
+			
+			JSONBackup = JSON.parse(JSON.stringify(JSONData)) ;
+		
+			JSONData = null;
+		}
+		localStorage.removeItem('WorkSheetData');
+		DOM('#UndoNotify').innerHTML = `<button id='UndoClear'>Data Cleared, Undo?</button>`;
+		DOM(`#UndoClear`).addEventListener('click', function (e) {
+			localStorage.setItem(
+				'WorkSheetData',
+				JSON.stringify(JSONBackup)
+			);
+			JSONBackup = null;
+			DOM('#UndoNotify').innerHTML = 'Data Restored';
+			InitApp();
+		});
+		setTimeout(function(){DOM('#UndoNotify').innerHTML = '';}, 30000);
+		
+
+	};
+
+
+
+	const DownloadFile = function () {
+		if (isDirty) {
+			if (!SaveProgress()) {
+				return;
+			}
+		}
+
+
+		worksheet = XLSX.utils.json_to_sheet(
+			JSON.parse(localStorage.getItem('WorkSheetData'))
+		);
+		if(workbook){
+			workbook.Sheets[workbook.SheetNames[0]] = worksheet;
+		}else{
+			workbook = XLSX.utils.book_new();
+			XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+		}
+		
+
+		XLSX.writeFile(workbook, file ? file.name : 'Inventory Sheet.xlsx', {
+			compression: true
+		});
+	};
+
 	//open and parse excel file. Exports data as JSON to HandsonTable Builder funciton
 	const handleFileSelect = function (e) {
-
+		let undo = false;
+		if (typeof JSONData != 'undefined') {
+			JSONBackup = JSON.parse(JSON.stringify(JSONData)) ;
+			undo = true;
+		}
 		// console.log(e);
 
-		let output = [];
 		file = e.target.files[0]; //retrive FileList Object
 
-		//collect file attributes
-		output.push('File size: ',
-			file.size / 1000.0, ' kb, last modified: ',
-			file.lastModified ? new Date(file.lastModified).toLocaleString() : 'n/a');
-		//output attributes to dom
-		DOM("#FileInfo").innerHTML = `<p> ${output.join('')} </p>`;
-
-
-		//type check
-		// if(!file.type.match('.xlsx')){
-		// 	console.log('Invalid File type');
-		// 	continue;
-		// }
 		//read file contents
 		let reader = new FileReader();
 
@@ -56,7 +154,7 @@
 			// console.log(e);
 			let data = e.target.result;
 
-			let workbook = XLSX.read(data, {
+			workbook = XLSX.read(data, {
 				type: 'binary'
 			});
 
@@ -82,6 +180,10 @@
 				alert("Incorrect File Selected");
 				DOM("#FileInfo").innerHTML = '';
 				DOM("#FileForm").reset();
+				file = null;
+				workbook = null;
+				worksheet = null;
+				JSONData = null;
 				if (hot) {
 					hot.loadData([]);
 					console.log("Clearing Table Data");
@@ -108,6 +210,19 @@
 
 		};
 		reader.readAsBinaryString(file);
+
+		if (undo) {
+			DOM('#UndoNotify').innerHTML = `<button id='UndoOverwrite'>Existing Data overwritten, Undo?</button>`;
+			DOM(`#UndoOverwrite`).addEventListener('click', function (e) {
+				localStorage.setItem(
+					'WorkSheetData',
+					JSON.stringify(JSONBackup)
+				);
+				JSONBackup = null;
+				DOM('#UndoNotify').innerHTML = '';
+				InitApp();
+			});
+		}
 	};
 
 	//handsontable builder plugin. pass JSON table data
@@ -159,7 +274,10 @@
 			filters: true,
 			columnSorting: true
 		});
-		Handsontable.hooks.add('afterChange', SetDirty);
+		Handsontable.hooks.add('afterChange', ChangeCallback);
+		isDirty = true;
+		SaveProgress();
+		saveLoop = setInterval(SaveProgress, 30000);
 		// console.log(hot);
 	};
 
@@ -253,7 +371,7 @@
 			filter = queryResult.filter(cell => cell.col == 2 && cell.data == query);
 		}
 		if (filter.length == 0) return null;
-		
+
 		// console.log(filter);
 		row = filter[0].row;
 
@@ -263,7 +381,7 @@
 		if (tally) {
 			let count = parseInt(rowData[9]);
 			if (isNaN(count)) count = 0;
-			
+
 			rowData[9] = ++count;
 			hot.setDataAtCell(row, 9, rowData[9]);
 		}
@@ -284,6 +402,7 @@
 
 	//addEventListeners to DOM elements
 	DOM("#xlfile").addEventListener('change', handleFileSelect, false);
+	DOM('#ClearButton').addEventListener('click', ClearData, false);
 	DOM("#QuickScan").addEventListener('click', OpenScanModal, false);
 	DOM("#ScanForm").addEventListener('submit', QuickScan, false);
 	DOM("#ScanModal").addEventListener('click', CloseScanModal, false);
@@ -295,7 +414,11 @@
 			e.stopPropagation();
 		}, false);
 	});
+	// DOMs('.save-btn').forEach(function (dom) {
+	// 	dom.addEventListener('click', SaveProgress);
+	// }, false);
+	DOM('#DownloadButton').addEventListener('click', DownloadFile, false);
 	DOM("#FileForm").reset();
-	
+	InitApp();
 
 });

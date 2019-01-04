@@ -17,17 +17,29 @@
 <body>
 	<main id="main">
 		<section id="FileSection">
-			<form action="" enctype="multipart/form-data" id="FileForm">
-				<label for="file">Click here to select a file</label><br>
-				<input type="file" name="xlfile" id="xlfile" accept=".xls,.xlsx" />
-				<div id="FileInfo"></div>
+			<div class="file-section-stack stack-6">
+				<form action="" enctype="multipart/form-data" id="FileForm">
 
-			</form>
-			<form action="" id="ButtonSection">
-				<button type="button" id="QuickScan">Quick Scan</button>
-				<button type="button" id="Edit">Search & Edit</button>
-				<button type="button" id="SaveButton">&#x1F4BE; Save</button>
-			</form>
+						<label for="file">Load File
+							<input type="file" name="xlfile" id="xlfile" accept=".xls,.xlsx" />
+						</label>
+
+					<span>
+						<label for="ClearData">Clear Data</label>
+						<button type="button" name="ClearData" id="ClearButton">&#x1F6AB;</button>
+					</span>
+					<div id="UndoNotify">&nbsp;</div>
+				</form>
+			</div>
+
+			<div class="file-section-stack stack-5">
+				<form action="" id="ButtonForm">
+					<button type="button" id="QuickScan">Quick Scan</button>
+					<button type="button" class='download-btn' id="DownloadButton">&#x1F4E5; Download</button>
+					<div id="FileInfo">&nbsp;</div>
+				</form>
+				
+			</div>
 		</section>
 		<section id="SheetContainer">
 			<article id="SheetData">
@@ -35,8 +47,8 @@
 		</section>
 		<section id="ScanModal" class="modal">
 			<article class="modal-content">
-				<div id="ScanCloseBtn"	class="close-btn">&times;</div>
-				<div class="save-btn">&#x1F4BE; <span>Save</span></div>
+				<div id="ScanCloseBtn" class="close-btn">&times;</div>
+				<!-- <div class="save-btn">&#x1F4BE; <span>Save Progress</span></div> -->
 				<h2>
 					Quick Scan Entry
 				</h2>

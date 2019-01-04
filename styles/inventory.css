@@ -7,6 +7,7 @@ html {
 html, body {
 	width: 100%;
 	height: 100%;
+	margin: 0;
 }
 
 #main{
@@ -21,22 +22,63 @@ html, body {
 #FileSection{
 	display: flex;
 	flex-direction: row;
-	flex-wrap: nowrap;
+	flex-wrap: wrap;
 	justify-content: space-between;
 	width: 95%;
-	height:100px;
+	/* height:100px; */
 	margin:20px auto 10px;
 	background-color: lightblue;
 }
+
 #FileSection form{
 	flex-basis: 500px;
+	display: flex;
+	padding: 10px;
 }
 
-#ButtonSection button{
-	width: 150px;
-	height: 100%;
-	/* background: rgba(197, 204, 211, 0.8); */
+.file-section-stack{
+	display: flex;	
+	flex-wrap: nowrap;
 }
+
+#FileForm{
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: space-around;
+}
+
+#ClearButton{
+	width: 80px;
+	height: 22px;
+	text-align: center;
+}
+#FileForm label{
+	padding: 8px;
+}
+
+#ButtonForm {
+	justify-content: space-around;
+	flex-wrap: wrap;
+}
+
+#ButtonForm button{
+	/* width: 150px; */
+	/* height: 100%; */
+	/* background: rgba(197, 204, 211, 0.8); */
+	padding: 15px 20px;
+	align-self: center;
+}
+
+#FileInfo, #UndoNotify{
+	font-size: 9pt;
+	margin:0;
+	padding: 8px 0;
+	text-align: center;
+	width: 300px;
+	flex-grow: 1;
+
+}
+
 /* #ButtonSection button:hover{
 	background: rgba(75, 100, 124, 0.5);
 } */
@@ -151,7 +193,21 @@ html, body {
 	width: 240px;
 	flex-grow: 4;
 }
+.stack-5{
+	width: 300px;
+	flex-grow: 5;
+}
+.stack-6{
+	width: 360px;
+	flex-grow: 6;
+}
 
+#ScanExpectedCount{
+	background-color: palegoldenrod;
+}
+#ScanCurrentCount{
+	background-color: palegreen;
+}
 /* Every even row */
 .ht_master tbody tr:nth-of-type(even) td {
   background-color: hsl(199, 100%, 95%);
